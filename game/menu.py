@@ -8,14 +8,14 @@ import constants
 class GameButton1(arcade.gui.UIFlatButton):
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
-        start_view = MainMenu()
+        start_view = GameOne()
         window.show_view(start_view)
         arcade.run()
 # This is essentially the same as GameButton1
 class GameButton2(arcade.gui.UIFlatButton):
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
-        start_view = MainMenu()
+        start_view = GameTwo()
         window.show_view(start_view)
         arcade.run()
 # This class creates a button that quits the program
