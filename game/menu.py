@@ -1,17 +1,17 @@
 import arcade
 import arcade.gui
 
-
 import constants
 
 # This class is used to create a button that is supposed to call a new view with a rectangle in it
 class GameButton1(arcade.gui.UIFlatButton):
     print("GameOneButton")
     def on_click(self, event: arcade.gui.UIOnClickEvent):
-        window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
+        self.window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
         start_view = GameOne()
-        window.show_view(start_view)
-        arcade.run()
+        
+        self.window.show_view(start_view)
+        
 # This is essentially the same as GameButton1
 class GameButton2(arcade.gui.UIFlatButton):
     def on_click(self, event: arcade.gui.UIOnClickEvent):
@@ -67,8 +67,13 @@ class GameOne(arcade.View):
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
     def on_draw(self):
         self.clear()
+<<<<<<< HEAD
         arcade.draw_rectangle_filled(center_x= self.window.width / 2, center_y= self.window.height / 2 - 110, width=300, height=100, color=(0, 0, 25))
     print("GameOne")
+=======
+        # arcade.draw_rectangle_filled(center_x= self.window.width / 2, center_y= self.window.height / 2 - 110, width=300, height=100, color=(0, 0, 25))
+        arcade.draw_text("Instructions Screen", self.window.width / 2, self.window.height / 2, arcade.color.WHITE, font_size=50, anchor_x="center")
+>>>>>>> 74773badc4f7226890fc181ddc773f1e08552999
 # this class is the same as GameOne
 class GameTwo(arcade.View):
     def __init__(self):
