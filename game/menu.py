@@ -6,6 +6,7 @@ import constants
 
 # This class is used to create a button that is supposed to call a new view with a rectangle in it
 class GameButton1(arcade.gui.UIFlatButton):
+    print("GameOneButton")
     def on_click(self, event: arcade.gui.UIOnClickEvent):
         window = arcade.Window(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT, constants.SCREEN_TITLE)
         start_view = GameOne()
@@ -41,6 +42,7 @@ class MainMenu(arcade.View):
                 anchor_y="center_y",
                 child=self.v_box)
         )
+        print("MainMenu")
     # Creates the background color and the viewport
     def on_show(self):
         arcade.set_background_color(arcade.csscolor.BEIGE)
@@ -56,6 +58,7 @@ class MainMenu(arcade.View):
         
 # This class is supposed to create a new view or a new window which will allow our menu to launch a new operation or in our case game
 class GameOne(arcade.View):
+    
     def __init__(self):
         super().__init__()
     def on_show(self):
@@ -65,7 +68,7 @@ class GameOne(arcade.View):
     def on_draw(self):
         self.clear()
         arcade.draw_rectangle_filled(center_x= self.window.width / 2, center_y= self.window.height / 2 - 110, width=300, height=100, color=(0, 0, 25))
-
+    print("GameOne")
 # this class is the same as GameOne
 class GameTwo(arcade.View):
     def __init__(self):
