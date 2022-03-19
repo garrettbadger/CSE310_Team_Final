@@ -10,7 +10,7 @@ class GameButton1(arcade.gui.UIFlatButton):
         start_view = GameOne()
         
         self.window.show_view(start_view)
-        arcade.run()
+        
 # This is essentially the same as GameButton1
 class GameButton2(arcade.gui.UIFlatButton):
     def on_click(self, event: arcade.gui.UIOnClickEvent):
