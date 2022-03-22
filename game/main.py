@@ -7,7 +7,7 @@ from src.game import Game
 width=constants.SCREEN_WIDTH
 height=constants.SCREEN_HEIGHT
 
-DEFAULT_WORD_LIST = ("try","again", "sometime","please","we","will", "rock","you")
+DEFAULT_WORD_LIST = ("try","again", "sometime","please","we","will", "rock","you","hello", "giant", "panda", "bear", "dog", "thing", "small")
 
 
 def main(screen_width, screen_height, words):
