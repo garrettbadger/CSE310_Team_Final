@@ -1,13 +1,17 @@
+from asyncio import constants
 import os
 from pickle import FALSE
 import random
 import shelve
 from enum import Enum
 import math
+import constants
 
 import arcade
 
 import src.word
+
+
 
 
 class GameStates(Enum):
@@ -16,7 +20,7 @@ class GameStates(Enum):
 
 class Game(arcade.Window):
     def __init__(self, width, height, words, word_rows_count=20):
-        super().__init__(width, height, title="Space Typer")
+        super().__init__(width, height, constants.SCREEN_TITLE)
         arcade.set_background_color((5, 2, 27))
 
         self.screen_width = width
@@ -28,16 +32,19 @@ class Game(arcade.Window):
 
         self.score = int()
         self.lives = int()
+        self.errors = int()
+        self.wpm = int()
         self.state = None
         self.focus_word = None # The word that is currently being focused on / typed
 
         self.word_list = set()
-        self.star_list = set()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
         self.score = 0
         self.lives = 3
+        self.errors = 0
+        self.wpm = 0
         self.state = GameStates.RUNNING
         self.focus_word = None
         
@@ -72,12 +79,12 @@ class Game(arcade.Window):
         )
     
     def draw_game(self):
+        
         for word in self.word_list:
             word.draw()
-        
         arcade.draw_text(f"Score : {self.score}", 15, 15, arcade.color.WHITE, 14)
         arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 15,  arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
-
+        arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
     def on_draw(self):
         arcade.start_render()
 
@@ -117,7 +124,7 @@ class Game(arcade.Window):
 
         if self.state == GameStates.RUNNING:
             for word in self.word_list:
-                word.x -= 50*delta_time
+                word.x -= 50*delta_time*(1+self.score)
                 if word.x < 0:
                     if self.focus_word == word:
                         self.focus_word = None
@@ -160,16 +167,20 @@ class Game(arcade.Window):
                 self.setup()
                 self.state = GameStates.RUNNING
             elif key == ord("q"):
-                raise SystemExit
+                arcade.exit()
 
         if self.focus_word is None:
             self.focus_word = self._get_leftmost_word_starting_with(chr(key))
             if self.focus_word is not None:
                 self.focus_word.in_focus = True
                 self.focus_word.attack()
+            elif not self.focus_word and not key == 32:
+                self.errors += 1
+            
         else:
             if self.focus_word.word[0].lower() == chr(key):
                 self.focus_word.attack()
+            else: self.errors += 1
 
         if self.focus_word.word == "":
             self.word_list.discard(self.focus_word)
