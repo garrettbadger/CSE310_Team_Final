@@ -10,8 +10,9 @@ height=constants.SCREEN_HEIGHT
 DEFAULT_WORD_LIST = ("try","again", "sometime","please","we","will", "rock","you")
 
 
-def main(screen_width, screen_height, words):
-    game = Game(screen_width, screen_height, words)
+def main(width, height, words):
+    game = Game(width, 
+    height, words)
     game.setup()
     arcade.run()
 
