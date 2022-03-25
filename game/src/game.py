@@ -75,8 +75,8 @@ class Game(arcade.Window):
 
         arcade.draw_text(f"Current score : {self.score}", 15, 15,arcade.color.WHITE, 14,)
         arcade.draw_text(f"High score : {self.high_score}", self.screen_width - 15, 15, arcade.color.WHITE, 14,
-             anchor_x="right", anchor_y="baseline"
-        )
+             anchor_x="right", anchor_y="baseline")
+        arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
     
     def draw_game(self):
         
