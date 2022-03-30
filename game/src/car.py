@@ -11,7 +11,6 @@ class Car():
         self.sprites = arcade.SpriteList()
 
     def draw(self):
-        self.sprites.append(self.car)
         self.sprites.draw()
     
     def update_image(self):
@@ -22,11 +21,14 @@ class Car():
         elif self.image == constants.CAR_IMG2:
             self.image = constants.CAR_IMG3
 
-        # I set the position different so I could see if it was drawing another behind the first
+        # I set a new position in case it was drawing another behind the first
         self.center_x = 200
         
+        # I even tried creating a new one altogether...
         self.create_car()
+        # and drawing the list again
         self.draw()
 
     def create_car(self):
         self.car = arcade.Sprite(filename=self.image, center_x=self.x, center_y=self.y)
+        self.sprites.append(self.car)
