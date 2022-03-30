@@ -1,13 +1,17 @@
+from asyncio import constants
 import os
 from pickle import FALSE
 import random
 import shelve
 from enum import Enum
 import math
-
+import constants
+import time
 import arcade
 
 import src.word
+
+
 
 
 class GameStates(Enum):
@@ -16,7 +20,7 @@ class GameStates(Enum):
 
 class Game(arcade.Window):
     def __init__(self, width, height, words, word_rows_count=20):
-        super().__init__(width, height, title="Space Typer")
+        super().__init__(width, height, constants.SCREEN_TITLE)
         arcade.set_background_color((5, 2, 27))
 
         self.screen_width = width
@@ -25,25 +29,32 @@ class Game(arcade.Window):
         self.word_rows_count = word_rows_count
 
         self.high_score = int()
-
+        self.start = float() # Keeps track of the time when you start typing out a word
+        self.end= float() # Keeps track of the time that you finish typing the word
+        self.avgwpm = list()
         self.score = int()
+        self.number_words = int()
         self.lives = int()
+        self.errors = int()
+        self.wpm = float()
         self.state = None
         self.focus_word = None # The word that is currently being focused on / typed
 
         self.word_list = set()
-        self.star_list = set()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
         self.score = 0
         self.lives = 3
+        self.number_words=3
+        self.errors = 0
+        self.wpm = 0
         self.state = GameStates.RUNNING
         self.focus_word = None
         
         self.word_list = set()
 
-        for _ in range(3):
+        for _ in range(self.number_words):
             self.create_word()
 
             
@@ -67,17 +78,19 @@ class Game(arcade.Window):
                          )
 
         arcade.draw_text(f"Current score : {self.score}", 15, 15,arcade.color.WHITE, 14,)
+        arcade.draw_text(f"Words Per Minute : {round(self.wpm)}", 15, 35,arcade.color.WHITE, 14,)
         arcade.draw_text(f"High score : {self.high_score}", self.screen_width - 15, 15, arcade.color.WHITE, 14,
-             anchor_x="right", anchor_y="baseline"
-        )
+             anchor_x="right", anchor_y="baseline")
+        arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
     
     def draw_game(self):
+         
         for word in self.word_list:
             word.draw()
-        
         arcade.draw_text(f"Score : {self.score}", 15, 15, arcade.color.WHITE, 14)
         arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 15,  arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
-
+        arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
+        arcade.draw_text(f"Words per Minute: {round(self.wpm)}", self.screen_width - 15, self.screen_height -30, arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
     def on_draw(self):
         arcade.start_render()
 
@@ -85,6 +98,17 @@ class Game(arcade.Window):
             self.draw_game()
         else:
             self.draw_game_over()
+
+    def calculateWPM(self):
+        #Calculate the words per minute by taking the score or total number of words and then dividing it by the total time it took to type the word and then subtracting any errors
+        wordsperminute = (self.score / (self.end - self.start)) - self.errors
+        self.avgwpm.append(wordsperminute)
+        # To try and average all the words per minute I store each value in a list and divide it by how many times you have completed a word
+        for i in self.avgwpm:
+            self.wpm += i
+        self.wpm = self.wpm / len(self.avgwpm)
+
+        
     
     def create_word(self):
         # Find a row that's currently not occupied by another word.
@@ -117,7 +141,7 @@ class Game(arcade.Window):
 
         if self.state == GameStates.RUNNING:
             for word in self.word_list:
-                word.x -= 50*delta_time
+                
                 if word.x < 0:
                     if self.focus_word == word:
                         self.focus_word = None
@@ -126,9 +150,29 @@ class Game(arcade.Window):
 
                     self.word_list.discard(word)
                     self.create_word()
+
+                """These if statements increase word speed based on score"""
+                if self.score >= 180:
+                    word.x -= 4
+                elif self.score >= 150:
+                    word.x -= 3.5
+                elif self.score >= 120:
+                    word.x -= 3
+                elif self.score >= 90:
+                    word.x -= 2.5
+                elif self.score >= 60:
+                    word.x -= 2
+                elif self.score >= 30:
+                    word.x -= 1.5
+                elif self.score >= 0:
+                    word.x -= 1
+                
+
+                    
+                
             
             if self.lives <= 0:
-                path = os.path.join(os.path.expanduser("~"), ".space-typer")
+                path = os.path.join(os.path.expanduser("~"), ".racer-type")
                 score_file = shelve.open(path)
                 new_high_score = int()
                 if score_file.get("high_score") == None:
@@ -160,19 +204,26 @@ class Game(arcade.Window):
                 self.setup()
                 self.state = GameStates.RUNNING
             elif key == ord("q"):
-                raise SystemExit
+                arcade.exit()
 
         if self.focus_word is None:
             self.focus_word = self._get_leftmost_word_starting_with(chr(key))
             if self.focus_word is not None:
                 self.focus_word.in_focus = True
                 self.focus_word.attack()
+                self.start = time.time()
+            elif not self.focus_word and not key == 32:
+                self.errors += 1
+            
         else:
             if self.focus_word.word[0].lower() == chr(key):
                 self.focus_word.attack()
+            else: self.errors += 1
 
         if self.focus_word.word == "":
             self.word_list.discard(self.focus_word)
             self.focus_word = None
             self.score += 1
+            self.end = time.time()
             self.create_word()
+            self.calculateWPM()

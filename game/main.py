@@ -1,17 +1,18 @@
 import arcade
 import argparse
 import yaml
-
+import constants
 from src.game import Game
 
-SCREEN_WIDTH = 800
+width=constants.SCREEN_WIDTH
+height=constants.SCREEN_HEIGHT
 
-SCREEN_HEIGHT = 600
+DEFAULT_WORD_LIST = ("try","again", "sometime","please","we","will", "rock","you","hello", "giant", "panda", "bear", "dog", "thing", "small")
 
-DEFAULT_WORD_LIST = ("try","again", "sometime","please","we","will", "rock","you")
 
-def main(screen_width, screen_height, words):
-    game = Game(screen_width, screen_height, words)
+def main(width, height, words):
+    game = Game(width, 
+    height, words)
     game.setup()
     arcade.run()
 
@@ -21,9 +22,9 @@ def parse_word_list(word_list_filename):
         return data["words"]
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Start space-typer game.")
-    parser.add_argument("--screen-width", type=int, default=SCREEN_WIDTH, help="Width of screen in pixels")
-    parser.add_argument("--screen-height", type=int, default=SCREEN_HEIGHT, help="Height of screen in pixels")
+    parser = argparse.ArgumentParser(description="Start Type Racer game.")
+    parser.add_argument("--screen-width", type=int, default=height, help="Width of screen in pixels")
+    parser.add_argument("--screen-height", type=int, default=height, help="Height of screen in pixels")
     parser.add_argument("--word-list", type=str, default=None,
                         help="yaml file containing the words to use in the game" +
                         " (use a list of words with key 'words'); by default use built-in word list.")
