@@ -9,7 +9,6 @@ height=constants.SCREEN_HEIGHT
 
 DEFAULT_WORD_LIST = ("try","again", "sometime","please","we","will", "rock","you","hello", "giant", "panda", "bear", "dog", "thing", "small")
 
-
 def main(width, height, words):
     game = Game(width, 
     height, words)

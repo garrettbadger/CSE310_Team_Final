@@ -1,6 +1,5 @@
 from asyncio import constants
 import os
-from pickle import FALSE
 import random
 import shelve
 from enum import Enum
@@ -8,10 +7,9 @@ import math
 import constants
 import time
 import arcade
+from src.car import Car
 
 import src.word
-
-
 
 
 class GameStates(Enum):
@@ -40,6 +38,7 @@ class Game(arcade.Window):
         self.focus_word = None # The word that is currently being focused on / typed
 
         self.word_list = set()
+        self.car = Car()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -55,7 +54,6 @@ class Game(arcade.Window):
 
         for _ in range(self.number_words):
             self.create_word()
-
             
     
     def draw_game_over(self):
@@ -90,7 +88,9 @@ class Game(arcade.Window):
         arcade.draw_text(f"Score : {self.score}", 15, 15, arcade.color.WHITE, 14)
         arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 15,  arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
-        # arcade.draw_text(f"Words per Minute: {round(self.wpm)}", self.screen_width - 15, self.screen_height -30, arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
+        
+        self.car.draw()
+
     def on_draw(self):
         arcade.start_render()
         
@@ -130,8 +130,6 @@ class Game(arcade.Window):
                 break
         
         self.word_list.add(src.word.Word(rand_word, row, self.screen_width, self.screen_height, self.word_rows_count))
-
-
     
     def update(self, delta_time):
         """ Movement and game logic """
@@ -145,6 +143,7 @@ class Game(arcade.Window):
                         self.focus_word = None
 
                     self.lives -= 1
+                    self.car.update_image()
 
                     self.word_list.discard(word)
                     self.create_word()
@@ -164,9 +163,6 @@ class Game(arcade.Window):
                     word.x -= 1.5
                 elif self.score >= 0:
                     word.x -= 1
-                
-
-                    
                 
             
             if self.lives <= 0:
