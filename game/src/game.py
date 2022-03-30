@@ -33,6 +33,7 @@ class Game(arcade.Window):
         self.end= float() # Keeps track of the time that you finish typing the word
         self.avgwpm = list()
         self.score = int()
+        self.number_words = int()
         self.lives = int()
         self.errors = int()
         self.wpm = float()
@@ -45,6 +46,7 @@ class Game(arcade.Window):
         """ Set up the game and initialize the variables. """
         self.score = 0
         self.lives = 3
+        self.number_words=3
         self.errors = 0
         self.wpm = 0
         self.state = GameStates.RUNNING
@@ -52,7 +54,7 @@ class Game(arcade.Window):
         
         self.word_list = set()
 
-        for _ in range(3):
+        for _ in range(self.number_words):
             self.create_word()
 
             
@@ -82,13 +84,13 @@ class Game(arcade.Window):
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
     
     def draw_game(self):
-        
+         
         for word in self.word_list:
             word.draw()
         arcade.draw_text(f"Score : {self.score}", 15, 15, arcade.color.WHITE, 14)
         arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 15,  arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
-        arcade.draw_text(f"Words per Minute: {round(self.wpm)}", 15, self.screen_height -50, arcade.color.WHITE, 14)
+        arcade.draw_text(f"Words per Minute: {round(self.wpm)}", self.screen_width - 15, self.screen_height -30, arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
     def on_draw(self):
         arcade.start_render()
 
@@ -170,7 +172,7 @@ class Game(arcade.Window):
                 
             
             if self.lives <= 0:
-                path = os.path.join(os.path.expanduser("~"), ".space-typer")
+                path = os.path.join(os.path.expanduser("~"), ".racer-type")
                 score_file = shelve.open(path)
                 new_high_score = int()
                 if score_file.get("high_score") == None:
