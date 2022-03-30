@@ -17,7 +17,6 @@ import src.word
 class GameStates(Enum):
     GAME_OVER = 0
     RUNNING = 1
-
 class Game(arcade.Window):
     def __init__(self, width, height, words, word_rows_count=20):
         super().__init__(width, height, constants.SCREEN_TITLE)
@@ -29,7 +28,7 @@ class Game(arcade.Window):
         self.word_rows_count = word_rows_count
 
         self.high_score = int()
-        self.start = float() # Keeps track of the time when you start typing out a word
+        self.start = time.time() # Keeps track of the time when you start typing out a word
         self.end= float() # Keeps track of the time that you finish typing the word
         self.avgwpm = list()
         self.score = int()
@@ -51,7 +50,7 @@ class Game(arcade.Window):
         self.wpm = 0
         self.state = GameStates.RUNNING
         self.focus_word = None
-        self.start = time.time()
+        
         self.word_list = set()
 
         for _ in range(self.number_words):
@@ -60,6 +59,7 @@ class Game(arcade.Window):
             
     
     def draw_game_over(self):
+        self.calculateWPM()
         arcade.draw_text("Game Over",
             self.screen_width / 2, (self.screen_height / 2) + 68,
             arcade.color.WHITE, 54,
@@ -90,10 +90,10 @@ class Game(arcade.Window):
         arcade.draw_text(f"Score : {self.score}", 15, 15, arcade.color.WHITE, 14)
         arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 15,  arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
-        arcade.draw_text(f"Words per Minute: {round(self.wpm)}", self.screen_width - 15, self.screen_height -30, arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
+        # arcade.draw_text(f"Words per Minute: {round(self.wpm)}", self.screen_width - 15, self.screen_height -30, arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
     def on_draw(self):
         arcade.start_render()
-        self.end = time.time()
+        
 
         if self.state == GameStates.RUNNING:
             self.draw_game()
@@ -102,12 +102,8 @@ class Game(arcade.Window):
 
     def calculateWPM(self):
         #Calculate the words per minute by taking the score or total number of words and then dividing it by the total time it took to type the word and then subtracting any errors
-        wordsperminute = (self.score / ( self.end - self.start)) - self.errors
-        self.avgwpm.append(wordsperminute)
-        # To try and average all the words per minute I store each value in a list and divide it by how many times you have completed a word
-        for i in self.avgwpm:
-            self.wpm += i
-        self.wpm = self.wpm / len(self.avgwpm)
+        self.wpm = (self.score / ( (self.end - self.start ) / 60) ) - self.errors
+        
 
         
     
@@ -183,8 +179,9 @@ class Game(arcade.Window):
                     new_high_score = max([self.score, score_file["high_score"]])
                 score_file["high_score"] = new_high_score
                 self.high_score = new_high_score
-
+                self.end = time.time()
                 self.state = GameStates.GAME_OVER
+                
 
     def _get_leftmost_word_starting_with(self, character):
         words_starting_with_given_character = []
@@ -228,4 +225,4 @@ class Game(arcade.Window):
             self.score += 1
             
             self.create_word()
-            self.calculateWPM()
+           
