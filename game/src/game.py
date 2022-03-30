@@ -8,10 +8,9 @@ import math
 import constants
 import time
 import arcade
+from src.car import Car
 
 import src.word
-
-
 
 
 class GameStates(Enum):
@@ -91,6 +90,8 @@ class Game(arcade.Window):
         arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 15,  arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
         arcade.draw_text(f"Words per Minute: {round(self.wpm)}", self.screen_width - 15, self.screen_height -30, arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
+        Car().draw()
+
     def on_draw(self):
         arcade.start_render()
 
@@ -147,6 +148,7 @@ class Game(arcade.Window):
                         self.focus_word = None
 
                     self.lives -= 1
+                    Car().update_image()
 
                     self.word_list.discard(word)
                     self.create_word()
@@ -166,9 +168,6 @@ class Game(arcade.Window):
                     word.x -= 1.5
                 elif self.score >= 0:
                     word.x -= 1
-                
-
-                    
                 
             
             if self.lives <= 0:
