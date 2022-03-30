@@ -50,7 +50,7 @@ class Game(arcade.Window):
         self.wpm = 0
         self.state = GameStates.RUNNING
         self.focus_word = None
-        
+        self.start = time.time()
         self.word_list = set()
 
         for _ in range(self.number_words):
@@ -94,6 +94,7 @@ class Game(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
+        self.end = time.time()
 
         if self.state == GameStates.RUNNING:
             self.draw_game()
@@ -139,7 +140,8 @@ class Game(arcade.Window):
     
     def update(self, delta_time):
         """ Movement and game logic """
-        self.end = time.time()
+        
+        print(self.end)
         if self.state == GameStates.RUNNING:
             for word in self.word_list:
                 
@@ -210,7 +212,7 @@ class Game(arcade.Window):
             if self.focus_word is not None:
                 self.focus_word.in_focus = True
                 self.focus_word.attack()
-                # self.start = time.time()
+                
             elif not self.focus_word and not key == 32:
                 self.errors += 1
             
@@ -223,6 +225,6 @@ class Game(arcade.Window):
             self.word_list.discard(self.focus_word)
             self.focus_word = None
             self.score += 1
-            # self.end = time.time()
+            
             self.create_word()
             self.calculateWPM()
