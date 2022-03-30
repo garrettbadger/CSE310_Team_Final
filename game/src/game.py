@@ -45,6 +45,7 @@ class Game(arcade.Window):
         """ Set up the game and initialize the variables. """
         self.score = 0
         self.lives = 3
+        self.start = time.time()
         self.errors = 0
         self.wpm = 0
         self.state = GameStates.RUNNING
@@ -99,7 +100,7 @@ class Game(arcade.Window):
 
     def calculateWPM(self):
         #Calculate the words per minute by taking the score or total number of words and then dividing it by the total time it took to type the word and then subtracting any errors
-        wordsperminute = (self.score / (self.end - self.start)) - self.errors
+        wordsperminute = (self.score / ( self.end - self.start)) - self.errors
         self.avgwpm.append(wordsperminute)
         # To try and average all the words per minute I store each value in a list and divide it by how many times you have completed a word
         for i in self.avgwpm:
@@ -136,7 +137,7 @@ class Game(arcade.Window):
     
     def update(self, delta_time):
         """ Movement and game logic """
-
+        self.end = time.time()
         if self.state == GameStates.RUNNING:
             for word in self.word_list:
                 
@@ -209,7 +210,7 @@ class Game(arcade.Window):
             if self.focus_word is not None:
                 self.focus_word.in_focus = True
                 self.focus_word.attack()
-                self.start = time.time()
+                # self.start = time.time()
             elif not self.focus_word and not key == 32:
                 self.errors += 1
             
@@ -222,6 +223,6 @@ class Game(arcade.Window):
             self.word_list.discard(self.focus_word)
             self.focus_word = None
             self.score += 1
-            self.end = time.time()
+            # self.end = time.time()
             self.create_word()
             self.calculateWPM()
