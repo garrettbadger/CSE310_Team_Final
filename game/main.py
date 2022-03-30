@@ -10,17 +10,16 @@ height=constants.SCREEN_HEIGHT
 DEFAULT_WORD_LIST = ("try","again", "sometime","please","we","will", "rock","you","hello", "giant", "panda", "bear", "dog", "thing", "small")
 
 
-def main(screen_width, screen_height, words):
-    game = Game(screen_width, screen_height, words)
+def main(width, height, words):
+    game = Game(width, 
+    height, words)
     game.setup()
     arcade.run()
-
 
 def parse_word_list(word_list_filename):
     with open(word_list_filename, "r") as word_list_file:
         data = yaml.safe_load(word_list_file)
         return data["words"]
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Start Type Racer game.")
