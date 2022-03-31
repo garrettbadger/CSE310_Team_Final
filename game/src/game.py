@@ -51,7 +51,7 @@ class Game(arcade.Window):
         self.wpm = 0
         self.state = GameStates.RUNNING
         self.focus_word = None
-        
+        self.start = time.time()
         self.word_list = set()
 
         for _ in range(self.number_words):
@@ -84,7 +84,7 @@ class Game(arcade.Window):
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
     
     def draw_game(self):
-         
+        
         for word in self.word_list:
             word.draw()
         arcade.draw_text(f"Score : {self.score}", 15, 15, arcade.color.WHITE, 14)
@@ -96,17 +96,17 @@ class Game(arcade.Window):
 
         if self.state == GameStates.RUNNING:
             self.draw_game()
+            self.end = time.time() 
         else:
             self.draw_game_over()
 
     def calculateWPM(self):
         #Calculate the words per minute by taking the score or total number of words and then dividing it by the total time it took to type the word and then subtracting any errors
-        wordsperminute = (self.score / (self.end - self.start)) - self.errors
+        wordsperminute = (self.score / (self.end - self.start))
         self.avgwpm.append(wordsperminute)
         # To try and average all the words per minute I store each value in a list and divide it by how many times you have completed a word
-        for i in self.avgwpm:
-            self.wpm += i
-        self.wpm = self.wpm / len(self.avgwpm)
+        
+        self.wpm = wordsperminute
 
         
     
@@ -211,7 +211,7 @@ class Game(arcade.Window):
             if self.focus_word is not None:
                 self.focus_word.in_focus = True
                 self.focus_word.attack()
-                self.start = time.time()
+                
             elif not self.focus_word and not key == 32:
                 self.errors += 1
             
@@ -224,6 +224,6 @@ class Game(arcade.Window):
             self.word_list.discard(self.focus_word)
             self.focus_word = None
             self.score += 1
-            self.end = time.time()
+            
             self.create_word()
             self.calculateWPM()
