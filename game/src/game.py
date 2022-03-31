@@ -1,6 +1,5 @@
 # from game import constants
 import os
-from pickle import FALSE
 import random
 import shelve
 from enum import Enum
@@ -8,16 +7,14 @@ import math
 import constants
 import time
 import arcade
+from src.car import Car
 
 import src.word
-
-
 
 
 class GameStates(Enum):
     GAME_OVER = 0
     RUNNING = 1
-
 class Game(arcade.Window):
     def __init__(self, width, height, words, word_rows_count=20):
         super().__init__(width, height, constants.SCREEN_TITLE)
@@ -29,10 +26,11 @@ class Game(arcade.Window):
         self.word_rows_count = word_rows_count
 
         self.high_score = int()
-        self.start = float() # Keeps track of the time when you start typing out a word
+        self.start = time.time() # Keeps track of the time when you start typing out a word
         self.end= float() # Keeps track of the time that you finish typing the word
         self.avgwpm = list()
         self.score = int()
+        self.number_words = int()
         self.lives = int()
         self.errors = int()
         self.wpm = float()
@@ -40,24 +38,26 @@ class Game(arcade.Window):
         self.focus_word = None # The word that is currently being focused on / typed
 
         self.word_list = set()
+        self.car = Car()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
         self.score = 0
         self.lives = 3
+        self.number_words=3
         self.errors = 0
         self.wpm = 0
         self.state = GameStates.RUNNING
         self.focus_word = None
-        
+        self.start = time.time()
         self.word_list = set()
 
-        for _ in range(3):
+        for _ in range(self.number_words):
             self.create_word()
-
             
     
     def draw_game_over(self):
+        self.calculateWPM()
         arcade.draw_text("Game Over",
             self.screen_width / 2, (self.screen_height / 2) + 68,
             arcade.color.WHITE, 54,
@@ -88,23 +88,31 @@ class Game(arcade.Window):
         arcade.draw_text(f"Score : {self.score}", 15, 15, arcade.color.WHITE, 14)
         arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 15,  arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
-        arcade.draw_text(f"Words per Minute: {round(self.wpm)}", 15, self.screen_height -50, arcade.color.WHITE, 14)
+        
+        self.car.draw()
+
     def on_draw(self):
         arcade.start_render()
+        
 
         if self.state == GameStates.RUNNING:
             self.draw_game()
+            self.end = time.time() 
         else:
             self.draw_game_over()
 
     def calculateWPM(self):
         #Calculate the words per minute by taking the score or total number of words and then dividing it by the total time it took to type the word and then subtracting any errors
-        wordsperminute = (self.score / (self.end - self.start)) - self.errors
+<<<<<<< HEAD
+        wordsperminute = (self.score / (self.end - self.start))
         self.avgwpm.append(wordsperminute)
         # To try and average all the words per minute I store each value in a list and divide it by how many times you have completed a word
-        for i in self.avgwpm:
-            self.wpm += i
-        self.wpm = self.wpm / len(self.avgwpm)
+        
+        self.wpm = wordsperminute
+=======
+        self.wpm = (self.score / ( (self.end - self.start ) / 60) ) - self.errors
+        
+>>>>>>> 99c10695f072bbfe78920307f4269c5a4ac624c5
 
         
     
@@ -131,12 +139,11 @@ class Game(arcade.Window):
                 break
         
         self.word_list.add(src.word.Word(rand_word, row, self.screen_width, self.screen_height, self.word_rows_count))
-
-
     
     def update(self, delta_time):
         """ Movement and game logic """
-
+        
+        print(self.end)
         if self.state == GameStates.RUNNING:
             for word in self.word_list:
                 
@@ -145,6 +152,7 @@ class Game(arcade.Window):
                         self.focus_word = None
 
                     self.lives -= 1
+                    self.car.update_image()
 
                     self.word_list.discard(word)
                     self.create_word()
@@ -165,12 +173,9 @@ class Game(arcade.Window):
                 elif self.score >= 0:
                     word.x -= 1
                 
-
-                    
-                
             
             if self.lives <= 0:
-                path = os.path.join(os.path.expanduser("~"), ".space-typer")
+                path = os.path.join(os.path.expanduser("~"), ".racer-type")
                 score_file = shelve.open(path)
                 new_high_score = int()
                 if score_file.get("high_score") == None:
@@ -179,8 +184,9 @@ class Game(arcade.Window):
                     new_high_score = max([self.score, score_file["high_score"]])
                 score_file["high_score"] = new_high_score
                 self.high_score = new_high_score
-
+                self.end = time.time()
                 self.state = GameStates.GAME_OVER
+                
 
     def _get_leftmost_word_starting_with(self, character):
         words_starting_with_given_character = []
@@ -209,7 +215,7 @@ class Game(arcade.Window):
             if self.focus_word is not None:
                 self.focus_word.in_focus = True
                 self.focus_word.attack()
-                self.start = time.time()
+                
             elif not self.focus_word and not key == 32:
                 self.errors += 1
             
@@ -222,6 +228,5 @@ class Game(arcade.Window):
             self.word_list.discard(self.focus_word)
             self.focus_word = None
             self.score += 1
-            self.end = time.time()
+            
             self.create_word()
-            self.calculateWPM()
