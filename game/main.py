@@ -2,7 +2,7 @@ import arcade
 import argparse
 import yaml
 import constants
-from src.game import Game
+from src.game import Game 
 
 width=constants.SCREEN_WIDTH
 height=constants.SCREEN_HEIGHT

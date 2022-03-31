@@ -230,4 +230,3 @@ class Game(arcade.Window):
             self.score += 1
             
             self.create_word()
-           
