@@ -1,4 +1,4 @@
-from asyncio import constants
+# from game import constants
 import os
 import random
 import shelve
@@ -138,7 +138,7 @@ class Game(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
         
-        print(self.end)
+        
         if self.state == GameStates.RUNNING:
             for word in self.word_list:
                 
