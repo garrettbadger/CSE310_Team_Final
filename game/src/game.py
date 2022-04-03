@@ -17,7 +17,7 @@ class GameStates(Enum):
     RUNNING = 1
 
 class Game(arcade.Window):
-    def __init__(self, width, height, words, word_rows_count=20):
+    def __init__(self, width, height, words, word_rows_count=10):
         super().__init__(width, height, constants.SCREEN_TITLE)
 
         self.screen_width = width
