@@ -10,7 +10,7 @@ class Word:
     
     def draw(self):
         arcade.draw_text(self.word, self.x, self.y,
-            arcade.color.DODGER_BLUE if self.in_focus else arcade.color.WHITE,
+            arcade.color.DODGER_BLUE if self.in_focus else arcade.color.BLACK,
         14)
     
     def attack(self):

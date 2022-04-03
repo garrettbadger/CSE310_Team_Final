@@ -15,18 +15,25 @@ import src.word
 class GameStates(Enum):
     GAME_OVER = 0
     RUNNING = 1
+
 class Game(arcade.Window):
     def __init__(self, width, height, words, word_rows_count=20):
         super().__init__(width, height, constants.SCREEN_TITLE)
-        arcade.set_background_color((5, 2, 27))
 
         self.screen_width = width
         self.screen_height = height
+        self.background_img = constants.BACKGROUND_IMG
+        self.foreground_img = constants.FOREGROUND_IMG
+        self.background_texture = arcade.load_texture(self.background_img)
+        self.foreground = arcade.Sprite(self.foreground_img, 0.5, center_x=800, center_y=40)
+        self.foreground2 = arcade.Sprite(self.foreground_img, 0.5, center_x=2400, center_y=40)
+        self.foreground_list = arcade.SpriteList()
+
         self.words = words
         self.word_rows_count = word_rows_count
-
+        
         self.high_score = int()
-        self.start = float()# Keeps track of the time when you start typing out a word
+        self.start = float() # Keeps track of the time when you start typing out a word
         self.end= float() # Keeps track of the time that you finish typing the word
         self.avgwpm = list()
         self.score = int()
@@ -39,6 +46,7 @@ class Game(arcade.Window):
 
         self.word_list = set()
         self.car = Car()
+
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -54,7 +62,9 @@ class Game(arcade.Window):
 
         for _ in range(self.number_words):
             self.create_word()
-            
+
+        self.foreground_list.append(self.foreground)
+        self.foreground_list.append(self.foreground2)
     
     def draw_game_over(self):
         self.calculateWPM()
@@ -70,7 +80,7 @@ class Game(arcade.Window):
             anchor_x="center", anchor_y="center"
         )
 
-        arcade.draw_text("q to quit",
+        arcade.draw_text("Press Q to quit",
                          self.screen_width / 2, (self.screen_height / 2) - 35,
                          arcade.color.WHITE, 24, anchor_x="center", anchor_y="center"
                          )
@@ -80,20 +90,23 @@ class Game(arcade.Window):
         arcade.draw_text(f"High score : {self.high_score}", self.screen_width - 15, 15, arcade.color.WHITE, 14,
              anchor_x="right", anchor_y="baseline")
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
-    
+
     def draw_game(self):
-        
+
+        arcade.draw_texture_rectangle(300, 300, 800, 600, self.background_texture)
+        for fg in self.foreground_list:
+            fg.draw()
+
         for word in self.word_list:
             word.draw()
-        arcade.draw_text(f"Score : {self.score}", 15, 15, arcade.color.WHITE, 14)
-        arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 15,  arcade.color.WHITE, 14, anchor_x="right", anchor_y="baseline")
-        arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
-        
+        arcade.draw_text(f"Score : {self.score}", 15, 90, arcade.color.BLACK, 14)
+        arcade.draw_text(f"Lives : {self.lives}", self.screen_width - 15, 90,  arcade.color.BLACK, 14, anchor_x="right", anchor_y="baseline")
+        arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.BLACK, 14)
+
         self.car.draw()
 
     def on_draw(self):
         arcade.start_render()
-        
 
         if self.state == GameStates.RUNNING:
             self.draw_game()
@@ -108,8 +121,6 @@ class Game(arcade.Window):
         # To try and average all the words per minute I store each value in a list and divide it by how many times you have completed a word
         
         self.wpm = wordsperminute
-
-        
     
     def create_word(self):
         # Find a row that's currently not occupied by another word.
@@ -138,8 +149,12 @@ class Game(arcade.Window):
     def update(self, delta_time):
         """ Movement and game logic """
         
-        
         if self.state == GameStates.RUNNING:
+            for fg in self.foreground_list:
+                fg.center_x -= 2
+                # if fg.center_x < -800:
+                #     fg.center_x = 2400
+            
             for word in self.word_list:
                 
                 if word.x < 0:
@@ -181,7 +196,6 @@ class Game(arcade.Window):
                 self.high_score = new_high_score
                 self.end = time.time()
                 self.state = GameStates.GAME_OVER
-                
 
     def _get_leftmost_word_starting_with(self, character):
         words_starting_with_given_character = []
@@ -194,7 +208,7 @@ class Game(arcade.Window):
             leftmost_word = min(words_starting_with_given_character, key=lambda word: word.x)
             return leftmost_word
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, key):
         if key > 127:
             return
 
