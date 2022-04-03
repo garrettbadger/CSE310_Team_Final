@@ -43,6 +43,6 @@ class Car():
             self.direction = 0
         
         if self.direction:
-            self.car.center_y -= 0.7
+            self.car.center_y -= 0.5
         else:
-            self.car.center_y += 0.7
+            self.car.center_y += 0.5
