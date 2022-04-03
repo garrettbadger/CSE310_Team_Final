@@ -113,7 +113,6 @@ class Game(arcade.Window):
         
         if self.state == GameStates.RUNNING:
             self.draw_game()
-            
             self.end = time.time() 
         else:
             self.draw_game_over()
@@ -155,6 +154,7 @@ class Game(arcade.Window):
         self.car.bounce_car()
         
         if self.state == GameStates.RUNNING:
+            self.car.bounce_car()
             for fg in self.foreground_list:
                 fg.center_x -= 2
                 if fg.center_x < -800:
