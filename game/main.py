@@ -22,6 +22,8 @@ def parse_word_list(word_list_filename):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Start Type Racer game.")
+    parser.add_argument("--screen-width", type=int, default=height, help="Width of screen in pixels")
+    parser.add_argument("--screen-height", type=int, default=height, help="Height of screen in pixels")
     parser.add_argument("--word-list", type=str, default=None,
                         help="yaml file containing the words" +
                         " (use a list of words with key 'words'); by default built words.")
