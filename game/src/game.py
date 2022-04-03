@@ -43,7 +43,7 @@ class Game(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
         self.score = 0
-        self.lives = 3
+        self.lives = 300
         self.number_words=3
         self.errors = 0
         self.wpm = 0
@@ -81,6 +81,8 @@ class Game(arcade.Window):
              anchor_x="right", anchor_y="baseline")
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
     
+        self.car.draw()
+
     def draw_game(self):
         
         for word in self.word_list:
@@ -90,13 +92,14 @@ class Game(arcade.Window):
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.WHITE, 14)
         
         self.car.draw()
+        
 
     def on_draw(self):
         arcade.start_render()
         
-
         if self.state == GameStates.RUNNING:
             self.draw_game()
+            
             self.end = time.time() 
         else:
             self.draw_game_over()
@@ -140,6 +143,7 @@ class Game(arcade.Window):
         
         
         if self.state == GameStates.RUNNING:
+            
             for word in self.word_list:
                 
                 if word.x < 0:
@@ -148,10 +152,12 @@ class Game(arcade.Window):
 
                     self.lives -= 1
                     self.car.update_image()
-
+                    
                     self.word_list.discard(word)
                     self.create_word()
+                
 
+                
                 """These if statements increase word speed based on score"""
                 if self.score >= 180:
                     word.x -= 4
@@ -166,12 +172,13 @@ class Game(arcade.Window):
                 elif self.score >= 30:
                     word.x -= 1.5
                 elif self.score >= 0:
-                    word.x -= 1
+                    word.x -= 5
                 
             
             if self.lives <= 0:
+                
                 path = os.path.join(os.path.expanduser("~"), ".racer-type")
-                score_file = shelve.open(path)
+                score_file = shelve.open(path)  
                 new_high_score = int()
                 if score_file.get("high_score") == None:
                     new_high_score = self.score
@@ -195,6 +202,7 @@ class Game(arcade.Window):
             return leftmost_word
 
     def on_key_press(self, key, modifiers):
+        
         if key > 127:
             return
 

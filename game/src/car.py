@@ -1,6 +1,7 @@
 import arcade
 import constants
-
+import math
+import time
 class Car():
     def __init__(self):
         self.image = constants.CAR_IMG0
@@ -16,7 +17,8 @@ class Car():
             self.sprites.pop()
         self.sprites.append(self.car)
         self.sprites.draw()
-    
+        
+        
     def update_image(self):
         if self.image == constants.CAR_IMG0:
             self.image= constants.CAR_IMG1
@@ -36,4 +38,9 @@ class Car():
         self.car = arcade.Sprite(filename=self.image, center_x=self.x, center_y=self.y)
 
     def bounce_car(self):
-        self.car.center_x = [1, 0]
+        if math.fmod(int(time.time()),2):
+            self.y += 0.5
+            self.draw()
+        else:
+            self.y -= 0.5
+            self.draw()
