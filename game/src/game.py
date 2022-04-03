@@ -59,6 +59,7 @@ class Game(arcade.Window):
         self.focus_word = None
         self.start = time.time()
         self.word_list = set()
+        self.car  = Car() # Reset the car image
 
         for _ in range(self.number_words):
             self.create_word()
