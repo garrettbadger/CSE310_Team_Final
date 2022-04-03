@@ -9,7 +9,7 @@
 - Python Arcade
 - YAML
 - Virutal Studio
-- SPython (3.9.12)
+- Python (3.9.12)
 
 To install arcade use py -m pip install arcade <br>
 To install yaml use py -m pip instill yaml
