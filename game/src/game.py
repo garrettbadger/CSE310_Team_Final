@@ -119,11 +119,11 @@ class Game(arcade.Window):
 
     def calculateWPM(self):
         #Calculate the words per minute by taking the score or total number of words and then dividing it by the total time it took to type the word and then subtracting any errors
-        wordsperminute = (self.score / (self.end - self.start))
-        self.avgwpm.append(wordsperminute)
-        # To try and average all the words per minute I store each value in a list and divide it by how many times you have completed a word
+        self.wpm = (self.score / ((self.end - self.start) / 60)) - self.errors
         
-        self.wpm = wordsperminute
+        
+        
+        
     
     def create_word(self):
         # Find a row that's currently not occupied by another word.
