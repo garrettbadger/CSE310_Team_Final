@@ -25,8 +25,8 @@ if __name__ == "__main__":
     parser.add_argument("--screen-width", type=int, default=height, help="Width of screen in pixels")
     parser.add_argument("--screen-height", type=int, default=height, help="Height of screen in pixels")
     parser.add_argument("--word-list", type=str, default=None,
-                        help="yaml file containing the words to use in the game" +
-                        " (use a list of words with key 'words'); by default use built-in word list.")
+                        help="yaml file containing the words" +
+                        " (use a list of words with key 'words'); by default built words.")
 
     args = parser.parse_args()
 

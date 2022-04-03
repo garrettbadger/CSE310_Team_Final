@@ -66,7 +66,6 @@ class Game(arcade.Window):
 
         self.foreground_list.append(self.foreground)
         self.foreground_list.append(self.foreground2)
-        # self.car.update_image()
     
     def draw_game_over(self):
         self.calculateWPM()
@@ -108,14 +107,12 @@ class Game(arcade.Window):
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.BLACK, 14)
 
         self.car.draw()
-        
 
     def on_draw(self):
         arcade.start_render()
         
         if self.state == GameStates.RUNNING:
             self.draw_game()
-            
             self.end = time.time() 
         else:
             self.draw_game_over()
@@ -157,6 +154,7 @@ class Game(arcade.Window):
         self.car.bounce_car()
         
         if self.state == GameStates.RUNNING:
+            self.car.bounce_car()
             for fg in self.foreground_list:
                 fg.center_x -= 2
                 if fg.center_x < -800:
