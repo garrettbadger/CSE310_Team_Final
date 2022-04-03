@@ -65,6 +65,7 @@ class Game(arcade.Window):
 
         self.foreground_list.append(self.foreground)
         self.foreground_list.append(self.foreground2)
+        # self.car.update_image()
     
     def draw_game_over(self):
         self.calculateWPM()
@@ -134,7 +135,7 @@ class Game(arcade.Window):
                 occupied_rows.add(word.row)
             if row not in occupied_rows:
                 break
-        
+
         # Find a word that starts with a character that is not the first
         # character of another word.
         occupied_chars = set()
@@ -147,9 +148,10 @@ class Game(arcade.Window):
                 break
         
         self.word_list.add(src.word.Word(rand_word, row, self.screen_width, self.screen_height, self.word_rows_count))
-    
+
     def update(self, delta_time):
         """ Movement and game logic """
+        self.car.bounce_car()
         
         if self.state == GameStates.RUNNING:
             self.car.bounce_car()
@@ -157,7 +159,7 @@ class Game(arcade.Window):
                 fg.center_x -= 2
                 if fg.center_x < -800:
                     fg.center_x = 2400
-            
+
             for word in self.word_list:
                 
                 if word.x < 0:
@@ -212,7 +214,7 @@ class Game(arcade.Window):
             leftmost_word = min(words_starting_with_given_character, key=lambda word: word.x)
             return leftmost_word
 
-    def on_key_press(self, key,extra):
+    def on_key_press(self, key, extra):
         if key > 127:
             return
 
