@@ -59,6 +59,7 @@ class Game(arcade.Window):
         self.focus_word = None
         self.start = time.time()
         self.word_list = set()
+        self.car  = Car() # Reset the car image
 
         for _ in range(self.number_words):
             self.create_word()
@@ -213,7 +214,7 @@ class Game(arcade.Window):
             leftmost_word = min(words_starting_with_given_character, key=lambda word: word.x)
             return leftmost_word
 
-    def on_key_press(self, key):
+    def on_key_press(self, key, extra):
         if key > 127:
             return
 
