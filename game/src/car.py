@@ -9,6 +9,8 @@ class Car():
         self.y = constants.CAR_Y
         self.car = arcade.Sprite(filename=self.image, center_x=self.x, center_y=self.y)
         self.sprites = arcade.SpriteList()
+        self.topY = 10
+        self.bottomY = 0
 
     def draw(self):
         # make sure we only have one
@@ -33,16 +35,10 @@ class Car():
         self.car = arcade.Sprite(filename=self.image, center_x=self.x, center_y=self.y)
 
     def bounce_car(self):
-        if math.fmod(int(time.time()),2):
-            self.y += 0.5
-            self.draw()
-        else:
-            self.y -= 0.5
-            self.draw()
 
-        if self.y > 20:
+        if self.y >= self.topY:
             self.y -= 1
-        elif self.y <= 0:
+        elif self.y <= self.bottomY:
             self.y += 1
     
     def reset_img(self):

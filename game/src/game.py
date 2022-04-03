@@ -106,14 +106,12 @@ class Game(arcade.Window):
         arcade.draw_text(f"Errors: {self.errors}", 15, self.screen_height - 30, arcade.color.BLACK, 14)
 
         self.car.draw()
-        
 
     def on_draw(self):
         arcade.start_render()
         
         if self.state == GameStates.RUNNING:
             self.draw_game()
-            
             self.end = time.time() 
         else:
             self.draw_game_over()
@@ -154,6 +152,7 @@ class Game(arcade.Window):
         """ Movement and game logic """
         
         if self.state == GameStates.RUNNING:
+            self.car.bounce_car()
             for fg in self.foreground_list:
                 fg.center_x -= 2
                 if fg.center_x < -800:
@@ -213,7 +212,7 @@ class Game(arcade.Window):
             leftmost_word = min(words_starting_with_given_character, key=lambda word: word.x)
             return leftmost_word
 
-    def on_key_press(self, key):
+    def on_key_press(self, key,extra):
         if key > 127:
             return
 
