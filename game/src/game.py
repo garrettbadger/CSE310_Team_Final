@@ -66,7 +66,6 @@ class Game(arcade.Window):
 
         self.foreground_list.append(self.foreground)
         self.foreground_list.append(self.foreground2)
-        # self.car.update_image()
     
     def draw_game_over(self):
         self.calculateWPM()

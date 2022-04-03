@@ -36,12 +36,6 @@ class Car():
         self.car = arcade.Sprite(filename=self.image, center_x=self.x, center_y=self.y)
 
     def bounce_car(self):
-        # if math.fmod(int(time.time()),2):
-        #     self.y += 0.5
-        #     self.draw()
-        # else:
-        #     self.y -= 0.5
-        #     self.draw()
 
         if self.car.center_y >= 30:
             self.direction = 1
@@ -52,10 +46,3 @@ class Car():
             self.car.center_y -= 0.7
         else:
             self.car.center_y += 0.7
-
-    def reset_img(self):
-        self.image == constants.CAR_IMG0
-        
-        self.create_car()
-        self.draw()
-
