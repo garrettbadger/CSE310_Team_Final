@@ -2,7 +2,6 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Type Racer"
 
-
 BACKGROUND_IMG = 'game/src/sprites/background.jpg'
 FOREGROUND_IMG = 'game/src/sprites/foreground.jpg'
 CAR_IMG0 = 'game/src/sprites/car-0.png'

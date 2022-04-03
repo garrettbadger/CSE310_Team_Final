@@ -51,7 +51,7 @@ class Game(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables. """
         self.score = 0
-        self.lives = 300
+        self.lives = 3
         self.number_words=3
         self.errors = 0
         self.wpm = 0
@@ -185,7 +185,7 @@ class Game(arcade.Window):
                 elif self.score >= 30:
                     word.x -= 1.5
                 elif self.score >= 0:
-                    word.x -= 5
+                    word.x -= 1
                 
             
             if self.lives <= 0:

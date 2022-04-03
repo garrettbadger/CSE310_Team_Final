@@ -5,7 +5,7 @@ class Word:
         self.word = word
         self.row = row
         self.x = screen_width
-        self.y = (int((screen_height - 100) / word_row_count) * row) +50
+        self.y = (int((screen_height - 100) / word_row_count) * row) +100
         self.in_focus = False
     
     def draw(self):

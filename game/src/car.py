@@ -39,6 +39,11 @@ class Car():
         else:
             self.y -= 0.5
             self.draw()
+
+        if self.y > 20:
+            self.y -= 1
+        elif self.y <= 0:
+            self.y += 1
     
     def reset_img(self):
         self.image == constants.CAR_IMG0
